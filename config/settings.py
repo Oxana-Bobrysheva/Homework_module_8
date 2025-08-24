@@ -71,7 +71,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": os.getenv("NAME"),
-        "USER": os.getenv("USER"),
+        "USER": os.getenv("DB_USER"),
         "PASSWORD": os.getenv("PASSWORD"),
         "HOST": os.getenv("HOST"),
         "PORT": os.getenv("PORT"),
@@ -111,3 +111,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.User"
+
+print("Database User:", os.getenv('DB_USER'))
+print("Database Password:", os.getenv('PASSWORD'))
