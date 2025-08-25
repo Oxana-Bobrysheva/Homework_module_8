@@ -26,6 +26,9 @@ class Course(models.Model):
         ),
     )
 
+    def __str__(self):
+        return self.course_name
+
     class Meta:
         verbose_name = ("Курс",)
         verbose_name_plural = "Курсы"
@@ -53,6 +56,8 @@ class Lesson(models.Model):
     )
     video_link = (
         models.TextField(
+            blank=True,
+            null=True,
             verbose_name="Ссылка на видео",
             help_text="Введите ссылку на видео",
         ),
