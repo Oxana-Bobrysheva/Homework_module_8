@@ -1,12 +1,8 @@
 from rest_framework import permissions
-from rest_framework.generics import (
-    CreateAPIView,
-    ListAPIView,
-    RetrieveAPIView,
-    UpdateAPIView,
-    DestroyAPIView,
-)
-from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, RetrieveAPIView,
+                                     UpdateAPIView)
+from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from study.models import Course, Lesson
@@ -19,17 +15,17 @@ class CourseViewSet(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff or user.groups.filter(name='moderators').exists():
+        if user.is_staff or user.groups.filter(name="moderators").exists():
             # Модераторы и админы видят все курсы
             return Course.objects.all()
         # Остальные видят только свои курсы
         return Course.objects.filter(owner=user)
 
     def get_permissions(self):
-        if self.action in ['create', 'destroy']:
+        if self.action in ["create", "destroy"]:
             # Создавать и удалять могут только админы
             self.permission_classes = [permissions.IsAdminUser]
-        elif self.action in ['update', 'partial_update', 'retrieve']:
+        elif self.action in ["update", "partial_update", "retrieve"]:
             # Редактировать могут админы и модераторы
             self.permission_classes = [permissions.IsAuthenticated, IsOwnerOrModerator]
         else:
@@ -49,7 +45,7 @@ class LessonCreateAPIView(CreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff or user.groups.filter(name='moderators').exists():
+        if user.is_staff or user.groups.filter(name="moderators").exists():
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=user)
 
@@ -63,7 +59,7 @@ class LessonListAPIView(ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff or user.groups.filter(name='moderators').exists():
+        if user.is_staff or user.groups.filter(name="moderators").exists():
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=user)
 
@@ -74,9 +70,10 @@ class LessonRetrieveAPIView(RetrieveAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff or user.groups.filter(name='moderators').exists():
+        if user.is_staff or user.groups.filter(name="moderators").exists():
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=user)
+
 
 class LessonUpdateAPIView(UpdateAPIView):
     serializer_class = LessonSerializer
@@ -84,7 +81,7 @@ class LessonUpdateAPIView(UpdateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff or user.groups.filter(name='moderators').exists():
+        if user.is_staff or user.groups.filter(name="moderators").exists():
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=user)
 
@@ -95,6 +92,6 @@ class LessonDestroyAPIView(DestroyAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff or user.groups.filter(name='moderators').exists():
+        if user.is_staff or user.groups.filter(name="moderators").exists():
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=user)
