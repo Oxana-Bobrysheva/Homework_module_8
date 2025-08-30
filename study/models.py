@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.db.models import SET_NULL
 
@@ -23,7 +24,12 @@ class Course(models.Model):
             verbose_name="Описание курса",
             help_text="Расскажите о своём курсе",
         ),
-
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='courses',
+        verbose_name='Владелец'
+    )
 
     def __str__(self):
         return self.course_name
@@ -69,7 +75,12 @@ class Lesson(models.Model):
             help_text="Укажите курс",
             related_name="lessons"
         ),
-
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='lessons',
+        verbose_name='Владелец'
+    )
 
     class Meta:
         verbose_name = "Урок"
