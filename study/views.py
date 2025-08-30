@@ -11,20 +11,27 @@ from rest_framework.viewsets import ModelViewSet
 
 from study.models import Course, Lesson
 from study.serializers import CourseSerializer, LessonSerializer
-from users.permissions import IsModerator
+from users.permissions import IsModerator, IsOwnerOrModerator
 
 
 class CourseViewSet(ModelViewSet):
-    queryset = Course.objects.all()
     serializer_class = CourseSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff or user.groups.filter(name='moderators').exists():
+            # Модераторы и админы видят все курсы
+            return Course.objects.all()
+        # Остальные видят только свои курсы
+        return Course.objects.filter(owner=user)
 
     def get_permissions(self):
         if self.action in ['create', 'destroy']:
             # Создавать и удалять могут только админы
             self.permission_classes = [permissions.IsAdminUser]
-        elif self.action in ['update', 'partial_update']:
+        elif self.action in ['update', 'partial_update', 'retrieve']:
             # Редактировать могут админы и модераторы
-            self.permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser | IsModerator]
+            self.permission_classes = [permissions.IsAuthenticated, IsOwnerOrModerator]
         else:
             # Просматривать могут все авторизованные пользователи
             self.permission_classes = [permissions.IsAuthenticated]
@@ -37,26 +44,57 @@ class CourseViewSet(ModelViewSet):
 
 
 class LessonCreateAPIView(CreateAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff or user.groups.filter(name='moderators').exists():
+            return Lesson.objects.all()
+        return Lesson.objects.filter(owner=user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 
 class LessonListAPIView(ListAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff or user.groups.filter(name='moderators').exists():
+            return Lesson.objects.all()
+        return Lesson.objects.filter(owner=user)
+
 
 class LessonRetrieveAPIView(RetrieveAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff or user.groups.filter(name='moderators').exists():
+            return Lesson.objects.all()
+        return Lesson.objects.filter(owner=user)
+
 class LessonUpdateAPIView(UpdateAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff or user.groups.filter(name='moderators').exists():
+            return Lesson.objects.all()
+        return Lesson.objects.filter(owner=user)
+
+
 class LessonDestroyAPIView(DestroyAPIView):
-    queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, DjangoModelPermissions]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff or user.groups.filter(name='moderators').exists():
+            return Lesson.objects.all()
+        return Lesson.objects.filter(owner=user)
