@@ -21,12 +21,14 @@ class CourseViewSet(ModelViewSet):
         return Course.objects.filter(owner=user)
 
     def get_permissions(self):
-        if self.action in ['create', 'destroy']:
+        if self.action in ['create']:
             # Создавать и удалять может любой авторизованный, но НЕ модератор
             self.permission_classes = [IsAuthenticated, ~IsModerator]
         elif self.action in ['update', 'partial_update', 'retrieve']:
             # Обновлять и смотреть детали может владелец ИЛИ модератор
             self.permission_classes = [IsAuthenticated, IsOwner | IsModerator]
+        elif self.action in ['destroy']:
+            self.permission_classes = [IsAuthenticated, IsOwner]
         else:
             # Для списка — любой авторизованный
             self.permission_classes = [IsAuthenticated]
