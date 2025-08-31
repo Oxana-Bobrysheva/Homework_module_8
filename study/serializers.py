@@ -4,6 +4,7 @@ from rest_framework.serializers import ModelSerializer
 
 from study.models import Course, Lesson
 
+
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
@@ -16,9 +17,10 @@ class LessonSerializer(serializers.ModelSerializer):
             "course",
         ]
 
+
 class CourseSerializer(serializers.ModelSerializer):
     lessons = LessonSerializer(many=True, read_only=True)
-    lessons_count=serializers.SerializerMethodField()
+    lessons_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
@@ -28,10 +30,8 @@ class CourseSerializer(serializers.ModelSerializer):
             "preview",
             "description",
             "lessons_count",
-            "lessons"
+            "lessons",
         ]
+
     def get_lessons_count(self, obj):
         return obj.lessons.count()
-
-
-

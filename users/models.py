@@ -9,7 +9,7 @@ class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **extra_fields):
         if not email:
-            raise ValueError('Email должен быть установлен')
+            raise ValueError("Email должен быть установлен")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -17,13 +17,13 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser должен иметь is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser должен иметь is_superuser=True.')
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser должен иметь is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser должен иметь is_superuser=True.")
 
         return self.create_user(email, password, **extra_fields)
 
@@ -62,12 +62,16 @@ class User(AbstractUser):
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
+        ordering = ["email"]
+
+    def __str__(self):
+        return self.email
 
 
 class Payment(models.Model):
     PAYMENT_TYPE_CHOICE = [
-        ('cash', 'наличными'),
-        ('to_account', 'переводом на счёт'),
+        ("cash", "наличными"),
+        ("to_account", "переводом на счёт"),
     ]
 
     user = models.ForeignKey(
@@ -76,14 +80,14 @@ class Payment(models.Model):
         null=True,
         blank=True,
         verbose_name="Пользователь",
-        related_name="payments"
+        related_name="payments",
     )
 
     payment_date = DateField(
         verbose_name="Дата платежа",
         null=True,
         blank=True,
-        help_text="Укажите дату оплаты"
+        help_text="Укажите дату оплаты",
     )
 
     paid_course = models.ForeignKey(
@@ -95,7 +99,7 @@ class Payment(models.Model):
         help_text="Укажите оплаченный курс",
     )
 
-    paid_lesson =models.ForeignKey(
+    paid_lesson = models.ForeignKey(
         "study.Lesson",
         on_delete=models.SET_NULL,
         null=True,
@@ -122,11 +126,12 @@ class Payment(models.Model):
     )
 
     def __str__(self):
-        course_or_lesson = self.paid_course if self.paid_course else (
-            self.paid_lesson)
-        return (f"Пользователь {self.user} оплатил "
-                f"{self.payment_amount} {self.get_payment_type_display()} "
-                f"за {course_or_lesson}. ")
+        course_or_lesson = self.paid_course if self.paid_course else (self.paid_lesson)
+        return (
+            f"Пользователь {self.user} оплатил "
+            f"{self.payment_amount} {self.get_payment_type_display()} "
+            f"за {course_or_lesson}. "
+        )
 
     class Meta:
         verbose_name = "Платеж"
