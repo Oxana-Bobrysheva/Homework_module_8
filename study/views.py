@@ -1,11 +1,14 @@
-from rest_framework import permissions
+from django.shortcuts import get_object_or_404
+from rest_framework import permissions, status
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, RetrieveAPIView,
                                      UpdateAPIView)
 from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from study.models import Course, Lesson
+from study.models import Course, Lesson, Subscription
 from study.serializers import CourseSerializer, LessonSerializer
 from users.permissions import IsModerator, IsOwner
 
@@ -95,3 +98,30 @@ class LessonDestroyAPIView(DestroyAPIView):
         if user.groups.filter(name="moderators").exists():
             return Lesson.objects.all()
         return Lesson.objects.filter(owner=user)
+
+
+class SubscriptionAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        user = request.user  # Получаем текущего пользователя
+        course_id = request.data.get('course_id')  # Получаем ID курса из данных запроса
+
+        if not course_id:
+            return Response({"error": "course_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Получаем объект курса
+        course_item = get_object_or_404(Course, id=course_id)
+
+        # Получаем подписку по пользователю и курсу
+        subs_item = Subscription.objects.filter(user_sub=user, course=course_item)
+
+        if subs_item.exists():
+            # Если подписка есть — удаляем её
+            subs_item.delete()
+            message = 'подписка удалена'
+        else:
+            # Если подписки нет — создаём её
+            Subscription.objects.create(user_sub=user, course=course_item)
+            message = 'подписка добавлена'
+
+        # Возвращаем ответ
+        return Response({"message": message}, status=status.HTTP_200_OK)

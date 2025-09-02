@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from study.apps import StudyConfig
 from study.views import (CourseViewSet, LessonCreateAPIView,
                          LessonDestroyAPIView, LessonListAPIView,
-                         LessonRetrieveAPIView, LessonUpdateAPIView)
+                         LessonRetrieveAPIView, LessonUpdateAPIView, SubscriptionAPIView)
 
 app_name = StudyConfig.name
 
@@ -23,6 +23,7 @@ urlpatterns = [
     path(
         "lessons/<int:pk>/update/", LessonUpdateAPIView.as_view(), name="lessons_update"
     ),
+    path('subscriptions/', SubscriptionAPIView.as_view(), name='subscription_manage'),
 ]
 
 urlpatterns += router.urls
