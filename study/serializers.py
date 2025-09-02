@@ -3,9 +3,13 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from study.models import Course, Lesson
+from study.validators import validate_video_link
 
 
 class LessonSerializer(serializers.ModelSerializer):
+    # Поле video-link с валидатором
+    materials = serializers.CharField(validators=[validate_video_link])
+
     class Meta:
         model = Lesson
         fields = [
