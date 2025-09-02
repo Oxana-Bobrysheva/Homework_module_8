@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.db import models
 from django.db.models import SET_NULL
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 class Course(models.Model):
     course_name = models.CharField(
@@ -82,3 +84,26 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = "Урок"
         verbose_name_plural = "Уроки"
+
+class Subscription(models.Model):
+    user_sub = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+        verbose_name='Пользователь'
+    )
+    course = models.ForeignKey(
+        'Course',
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+        verbose_name='Курс'
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата подписки')
+
+    class Meta:
+        unique_together = ('user_sub', 'course')
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+
+    def __str__(self):
+        return f'{self.user_sub} подписан на {self.course}'
