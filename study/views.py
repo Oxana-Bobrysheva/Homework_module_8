@@ -51,7 +51,7 @@ class LessonCreateAPIView(CreateAPIView):
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name="moderators").exists():
-            return Lesson.objects.all()
+            return Lesson.objects.all().order_by('id')
         return Lesson.objects.filter(owner=user)
 
     def perform_create(self, serializer):
@@ -75,10 +75,7 @@ class LessonRetrieveAPIView(RetrieveAPIView):
     permission_classes = [IsAuthenticated, IsOwner | IsModerator]
 
     def get_queryset(self):
-        user = self.request.user
-        if user.groups.filter(name="moderators").exists():
-            return Lesson.objects.all()
-        return Lesson.objects.filter(owner=user)
+        return Lesson.objects.all()
 
 
 class LessonUpdateAPIView(UpdateAPIView):
@@ -86,10 +83,7 @@ class LessonUpdateAPIView(UpdateAPIView):
     permission_classes = [IsAuthenticated, IsOwner | IsModerator]
 
     def get_queryset(self):
-        user = self.request.user
-        if user.groups.filter(name="moderators").exists():
-            return Lesson.objects.all()
-        return Lesson.objects.filter(owner=user)
+        return Lesson.objects.all()
 
 
 class LessonDestroyAPIView(DestroyAPIView):
@@ -97,15 +91,14 @@ class LessonDestroyAPIView(DestroyAPIView):
     permission_classes = [IsAuthenticated, IsOwner]
 
     def get_queryset(self):
-        user = self.request.user
-        if user.groups.filter(name="moderators").exists():
-            return Lesson.objects.all()
-        return Lesson.objects.filter(owner=user)
+        return Lesson.objects.all()
 
 
 class SubscriptionAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
-        user = request.user  # Получаем текущего пользователя
+        user_sub = request.user  # Получаем текущего пользователя
         course_id = request.data.get('course_id')  # Получаем ID курса из данных запроса
 
         if not course_id:
@@ -115,15 +108,15 @@ class SubscriptionAPIView(APIView):
         course_item = get_object_or_404(Course, id=course_id)
 
         # Получаем подписку по пользователю и курсу
-        subs_item = Subscription.objects.filter(user_sub=user, course=course_item)
+        subs_item = Subscription.objects.filter(user_sub=user_sub, course=course_item)
 
         if subs_item.exists():
             # Если подписка есть — удаляем её
-            subs_item.delete()
+            subs_item.first().delete()
             message = 'подписка удалена'
         else:
             # Если подписки нет — создаём её
-            Subscription.objects.create(user_sub=user, course=course_item)
+            Subscription.objects.create(user_sub=user_sub, course=course_item)
             message = 'подписка добавлена'
 
         # Возвращаем ответ

@@ -8,7 +8,12 @@ from study.validators import validate_video_link
 
 class LessonSerializer(serializers.ModelSerializer):
     # Поле video-link с валидатором
-    materials = serializers.CharField(validators=[validate_video_link])
+    video_link = serializers.CharField(
+        validators=[validate_video_link],
+        write_only=True,
+        required=False,
+        allow_blank=True,
+    )
 
     class Meta:
         model = Lesson
@@ -19,7 +24,17 @@ class LessonSerializer(serializers.ModelSerializer):
             "preview_l",
             "video_link",
             "course",
+            "owner"
         ]
+        read_only_fields = ["owner"]
+
+    def create(self, validated_data):
+        validated_data.pop('video_link', None)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data.pop('video_link', None)
+        return super().update(instance, validated_data)
 
 
 class CourseSerializer(serializers.ModelSerializer):
