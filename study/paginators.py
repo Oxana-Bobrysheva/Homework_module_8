@@ -1,6 +1,9 @@
 from rest_framework.pagination import PageNumberPagination
 
+
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10  # Количество объектов на странице по умолчанию
-    page_size_query_param = 'page_size'  # Позволяет клиенту менять размер страницы через параметр запроса
+    page_size_query_param = (
+        "page_size"
+    )
     max_page_size = 50  # Максимальное количество объектов на странице

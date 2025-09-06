@@ -1,5 +1,5 @@
-import re
 from rest_framework import serializers
+
 
 def validate_video_link(value):
     """
@@ -14,9 +14,9 @@ def validate_video_link(value):
     if isinstance(value, str):
         # Проверяем, что в ссылке есть youtube.com
         if "youtube.com" not in value:
-            raise serializers.ValidationError("Допустимы только ссылки на youtube.com")
+            raise serializers.ValidationError(
+                "Допустимы только ссылки на youtube.com")
     else:
-        # Если поле не строка — возможно, другое представление, просто пропускаем
         pass
 
     return value

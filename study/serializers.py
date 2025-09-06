@@ -1,6 +1,4 @@
-from django.core.serializers import serialize
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
 
 from study.models import Course, Lesson, Subscription
 from study.validators import validate_video_link
@@ -24,16 +22,16 @@ class LessonSerializer(serializers.ModelSerializer):
             "preview_l",
             "video_link",
             "course",
-            "owner"
+            "owner",
         ]
         read_only_fields = ["owner"]
 
     def create(self, validated_data):
-        validated_data.pop('video_link', None)
+        validated_data.pop("video_link", None)
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        validated_data.pop('video_link', None)
+        validated_data.pop("video_link", None)
         return super().update(instance, validated_data)
 
 
@@ -51,33 +49,39 @@ class CourseSerializer(serializers.ModelSerializer):
             "description",
             "lessons_count",
             "lessons",
-            "is_subscribed"
+            "is_subscribed",
         ]
 
     def get_lessons_count(self, obj):
         return obj.lessons.count()
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
+        user = self.context.get("request").user
         if user and user.is_authenticated:
             from study.models import Subscription
-            return Subscription.objects.filter(user_sub=user, course=obj).exists()
+
+            return Subscription.objects.filter(user_sub=user,
+                                               course=obj).exists()
         return False
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
 
-    user_email = serializers.CharField(source='user_sub.email', read_only=True)  # Email пользователя
-    course_name = serializers.CharField(source='course.course_name', read_only=True)  # Название курса
+    user_email = serializers.CharField(
+        source="user_sub.email", read_only=True
+    )  # Email пользователя
+    course_name = serializers.CharField(
+        source="course.course_name", read_only=True
+    )  # Название курса
 
     class Meta:
         model = Subscription
         fields = [
             "id",
             "user_sub",  # ID пользователя
-            "course",    # ID курса
-            "created_at", # Дата подписки
+            "course",  # ID курса
+            "created_at",  # Дата подписки
             "user_email",  # Дополнительное поле (read-only)
-            "course_name"  # Дополнительное поле (read-only)
+            "course_name",  # Дополнительное поле (read-only)
         ]
         read_only_fields = ["id", "created_at"]

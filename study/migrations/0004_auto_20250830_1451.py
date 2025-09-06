@@ -11,7 +11,7 @@ def fix_owner_ids(apps, schema_editor):
         # Если пользователей нет — ничего не делаем
         return
 
-    # Исправляем все уроки с owner_id=2 (не существующий) на существующего пользователя
+    # Исправляем все уроки с owner_id=2 на существующего пользователя
     lessons_to_fix = Lesson.objects.filter(owner_id=2)
     lessons_to_fix.update(owner=owner)
 
