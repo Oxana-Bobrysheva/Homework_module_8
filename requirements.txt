@@ -1,6 +1,7 @@
 asgiref==3.9.1
 black==25.1.0
 click==8.2.1
+coverage==7.10.6
 Django==5.2.5
 django-filter==25.1
 djangorestframework==3.16.1

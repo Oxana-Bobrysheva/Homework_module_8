@@ -1,11 +1,14 @@
 from django.conf import settings
 from django.db import models
-from django.db.models import SET_NULL
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class Course(models.Model):
     course_name = models.CharField(
-        max_length=200, verbose_name="Курс", help_text="Введите название курса"
+        max_length=200, verbose_name="Курс",
+        help_text="Введите название курса"
     )
 
     preview = models.ImageField(
@@ -40,11 +43,13 @@ class Course(models.Model):
 
 class Lesson(models.Model):
     lesson_name = models.CharField(
-        max_length=250, verbose_name="Урок", help_text="Введите название урока"
+        max_length=250, verbose_name="Урок",
+        help_text="Введите название урока"
     )
 
     lesson_description = models.TextField(
-        verbose_name="Описание урока", help_text="Расскажите об уроке"
+        verbose_name="Описание урока",
+        help_text="Расскажите об уроке"
     )
 
     preview_l = models.ImageField(
@@ -82,3 +87,29 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = "Урок"
         verbose_name_plural = "Уроки"
+        ordering = ["id"]
+
+
+class Subscription(models.Model):
+    user_sub = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="subscriptions",
+        verbose_name="Пользователь",
+    )
+    course = models.ForeignKey(
+        "Course",
+        on_delete=models.CASCADE,
+        related_name="subscriptions",
+        verbose_name="Курс",
+    )
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name="Дата подписки")
+
+    class Meta:
+        unique_together = ("user_sub", "course")
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
+
+    def __str__(self):
+        return f"{self.user_sub} подписан на {self.course}"
