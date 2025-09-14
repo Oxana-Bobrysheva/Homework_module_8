@@ -7,8 +7,7 @@ User = get_user_model()
 
 class Course(models.Model):
     course_name = models.CharField(
-        max_length=200, verbose_name="Курс",
-        help_text="Введите название курса"
+        max_length=200, verbose_name="Курс", help_text="Введите название курса"
     )
     price = models.DecimalField(
         max_digits=10,
@@ -49,8 +48,7 @@ class Course(models.Model):
 
 class Lesson(models.Model):
     lesson_name = models.CharField(
-        max_length=250, verbose_name="Урок",
-        help_text="Введите название урока"
+        max_length=250, verbose_name="Урок", help_text="Введите название урока"
     )
     price = models.DecimalField(
         max_digits=10,
@@ -60,8 +58,7 @@ class Lesson(models.Model):
         default=0.00,
     )
     lesson_description = models.TextField(
-        verbose_name="Описание урока",
-        help_text="Расскажите об уроке"
+        verbose_name="Описание урока", help_text="Расскажите об уроке"
     )
 
     preview_l = models.ImageField(
@@ -115,8 +112,9 @@ class Subscription(models.Model):
         related_name="subscriptions",
         verbose_name="Курс",
     )
-    created_at = models.DateTimeField(auto_now_add=True,
-                                      verbose_name="Дата подписки")
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Дата подписки")
 
     class Meta:
         unique_together = ("user_sub", "course")

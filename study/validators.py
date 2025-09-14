@@ -16,7 +16,8 @@ def validate_video_link(value):
             # Проверяем, что в ссылке есть youtube.com
             if "youtube.com" not in value:
                 raise serializers.ValidationError(
-                    "Допустимы только ссылки на youtube.com")
+                    "Допустимы только ссылки на youtube.com"
+                )
         else:
             pass
 

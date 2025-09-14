@@ -11,7 +11,7 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError("Email должен быть установлен")
         email = self.normalize_email(email)
-        extra_fields.pop('username', None)
+        extra_fields.pop("username", None)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -126,22 +126,16 @@ class Payment(models.Model):
         blank=True,
     )
     stripe_session_id = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-        verbose_name="Stripe Session ID")
+        max_length=255, null=True, blank=True, verbose_name="Stripe Session ID"
+    )
 
     stripe_payment_status = models.CharField(
-        max_length=50,
-        null=True,
-        blank=True,
-        verbose_name="Статус оплаты в Stripe")
+        max_length=50, null=True, blank=True, verbose_name="Статус оплаты в Stripe"
+    )
 
     payment_url = models.URLField(
-        null=True,
-        blank=True,
-        verbose_name="Ссылка на оплату")
-
+        null=True, blank=True, verbose_name="Ссылка на оплату"
+    )
 
     def __str__(self):
         course_or_lesson = self.paid_course if self.paid_course else (self.paid_lesson)

@@ -25,7 +25,8 @@ class CourseViewSet(ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        if not user.is_authenticated or getattr(self, 'swagger_fake_view', False):
+        if not user.is_authenticated or getattr(
+                self, "swagger_fake_view", False):
             return Course.objects.none()
 
         if user.groups.filter(name="moderators").exists():
@@ -117,10 +118,9 @@ class SubscriptionAPIView(APIView):
 
         # Получаем объект курса
         course_item = get_object_or_404(Course, id=course_id)
-
         # Получаем подписку по пользователю и курсу
-        subs_item = Subscription.objects.filter(user_sub=user_sub,
-                                                course=course_item)
+        subs_item = Subscription.objects.filter(
+            user_sub=user_sub, course=course_item)
 
         if subs_item.exists():
             # Если подписка есть — удаляем её
@@ -128,10 +128,9 @@ class SubscriptionAPIView(APIView):
             message = "подписка удалена"
         else:
             # Если подписки нет — создаём её
-            Subscription.objects.create(user_sub=user_sub,
-                                        course=course_item)
+            Subscription.objects.create(
+                user_sub=user_sub, course=course_item)
             message = "подписка добавлена"
 
         # Возвращаем ответ
-        return Response({"message": message},
-                        status=status.HTTP_200_OK)
+        return Response({"message": message}, status=status.HTTP_200_OK)

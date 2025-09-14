@@ -15,15 +15,17 @@ from study.views import (
 app_name = StudyConfig.name
 
 router = DefaultRouter()
-router.register(r"courses", CourseViewSet,
-                basename="course")
+router.register(r"courses", CourseViewSet, basename="course")
 
 urlpatterns = [
-    path("lessons/", LessonListAPIView.as_view(),
+    path("lessons/",
+         LessonListAPIView.as_view(),
          name="lessons_list"),
-    path("lessons/<int:pk>/", LessonRetrieveAPIView.as_view(),
+    path("lessons/<int:pk>/",
+         LessonRetrieveAPIView.as_view(),
          name="lessons_retrieve"),
-    path("lessons/create/", LessonCreateAPIView.as_view(),
+    path("lessons/create/",
+         LessonCreateAPIView.as_view(),
          name="lessons_create"),
     path(
         "lessons/<int:pk>/delete/",
@@ -31,10 +33,12 @@ urlpatterns = [
         name="lessons_delete",
     ),
     path(
-        "lessons/<int:pk>/update/", LessonUpdateAPIView.as_view(),
+        "lessons/<int:pk>/update/",
+        LessonUpdateAPIView.as_view(),
         name="lessons_update"
     ),
-    path("subscriptions/", SubscriptionAPIView.as_view(),
+    path("subscriptions/",
+         SubscriptionAPIView.as_view(),
          name="subscription_manage"),
 ]
 

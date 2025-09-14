@@ -60,8 +60,9 @@ class CourseSerializer(serializers.ModelSerializer):
         if user and user.is_authenticated:
             from study.models import Subscription
 
-            return Subscription.objects.filter(user_sub=user,
-                                               course=obj).exists()
+            return Subscription.objects.filter(
+                user_sub=user,
+                course=obj).exists()
         return False
 
 
