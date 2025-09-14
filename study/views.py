@@ -24,6 +24,10 @@ class CourseViewSet(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+
+        if not user.is_authenticated or getattr(self, 'swagger_fake_view', False):
+            return Course.objects.none()
+
         if user.groups.filter(name="moderators").exists():
             return Course.objects.all()
         # Остальные видят только свои курсы

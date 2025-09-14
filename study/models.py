@@ -10,7 +10,13 @@ class Course(models.Model):
         max_length=200, verbose_name="Курс",
         help_text="Введите название курса"
     )
-
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Цена курса",
+        help_text="Укажите стоимость курса в рублях",
+        default=0.00,
+    )
     preview = models.ImageField(
         upload_to="study/previews",
         blank=True,
@@ -46,7 +52,13 @@ class Lesson(models.Model):
         max_length=250, verbose_name="Урок",
         help_text="Введите название урока"
     )
-
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Цена урока",
+        help_text="Укажите стоимость урока в рублях",
+        default=0.00,
+    )
     lesson_description = models.TextField(
         verbose_name="Описание урока",
         help_text="Расскажите об уроке"

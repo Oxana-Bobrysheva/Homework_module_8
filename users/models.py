@@ -125,6 +125,23 @@ class Payment(models.Model):
         null=True,
         blank=True,
     )
+    stripe_session_id = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        verbose_name="Stripe Session ID")
+
+    stripe_payment_status = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        verbose_name="Статус оплаты в Stripe")
+
+    payment_url = models.URLField(
+        null=True,
+        blank=True,
+        verbose_name="Ссылка на оплату")
+
 
     def __str__(self):
         course_or_lesson = self.paid_course if self.paid_course else (self.paid_lesson)
