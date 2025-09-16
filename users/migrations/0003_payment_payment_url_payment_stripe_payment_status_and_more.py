@@ -31,7 +31,10 @@ class Migration(migrations.Migration):
             model_name="payment",
             name="stripe_session_id",
             field=models.CharField(
-                blank=True, max_length=255, null=True, verbose_name="Stripe Session ID"
+                blank=True,
+                max_length=255,
+                null=True,
+                verbose_name="Stripe Session ID"
             ),
         ),
     ]

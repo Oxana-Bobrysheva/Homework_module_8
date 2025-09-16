@@ -16,7 +16,8 @@ from .stripe_services import (
     create_stripe_product,
     create_stripe_price,
     create_stripe_session,
-)
+)from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
 
 class UserViewSet(ModelViewSet):
@@ -69,7 +70,8 @@ class PaymentViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                 item_price = item.price
         except (Course.DoesNotExist, Lesson.DoesNotExist):
             return Response(
-                {"error": "Курс или урок не найден"}, status=status.HTTP_404_NOT_FOUND
+                {"error": "Курс или урок не найден"},
+                status=status.HTTP_404_NOT_FOUND
             )
 
         # Создаём платёж в базе
@@ -82,7 +84,8 @@ class PaymentViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         try:
             # Интеграция с Stripe
-            product_id = create_stripe_product(item_name, f"Оплата за {item_name}")
+            product_id = create_stripe_product(item_name,
+                                               f"Оплата за {item_name}")
             price_id = create_stripe_price(product_id, item_price)
             success_url = request.build_absolute_uri("/users/payment/success/")
             cancel_url = request.build_absolute_uri("/users/payment/cancel/")
@@ -90,8 +93,8 @@ class PaymentViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
                 price_id, success_url, cancel_url, user.email
             )
 
-            payment.stripe_session_id = session_id  # Если добавите это поле в модель
-            payment.payment_url = payment_url  # Если добавите это поле в модель
+            payment.stripe_session_id = session_id
+            payment.payment_url = payment_url
             payment.save()
 
             return Response(
@@ -103,9 +106,11 @@ class PaymentViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             )
 
         except Exception as e:
-            payment.status = "failed"  # Если добавите поле status
+            payment.status = "failed"
             payment.save()
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST)
 
 
 class RegisterView(generics.CreateAPIView):

@@ -130,15 +130,21 @@ class Payment(models.Model):
     )
 
     stripe_payment_status = models.CharField(
-        max_length=50, null=True, blank=True, verbose_name="Статус оплаты в Stripe"
+        max_length=50,
+        null=True,
+        blank=True,
+        verbose_name="Статус оплаты в Stripe"
     )
 
     payment_url = models.URLField(
-        null=True, blank=True, verbose_name="Ссылка на оплату"
+        null=True,
+        blank=True,
+        verbose_name="Ссылка на оплату"
     )
 
     def __str__(self):
-        course_or_lesson = self.paid_course if self.paid_course else (self.paid_lesson)
+        course_or_lesson = self.paid_course if self.paid_course else (
+            self.paid_lesson)
         return (
             f"Пользователь {self.user} оплатил "
             f"{self.payment_amount} {self.get_payment_type_display()} "
