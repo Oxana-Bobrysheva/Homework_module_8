@@ -16,7 +16,8 @@ from .stripe_services import (
     create_stripe_product,
     create_stripe_price,
     create_stripe_session,
-)from drf_yasg import openapi
+)
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
 
@@ -41,6 +42,73 @@ class PaymentViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         return Payment.objects.filter(user=self.request.user)
 
+    @swagger_auto_schema(
+        operation_description="Создание платежа для курса или урока",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'course_id': openapi.Schema(
+                    type=openapi.TYPE_INTEGER,
+                    description='ID курса для оплаты '
+                                '(обязателен, если не указан lesson_id)',
+                    example=1
+                ),
+                'lesson_id': openapi.Schema(
+                    type=openapi.TYPE_INTEGER,
+                    description='ID урока для оплаты '
+                                '(обязателен, если не указан course_id)',
+                    example=2
+                ),
+            },
+            required=[],
+        ),
+        responses={
+            201: openapi.Response(
+                description="Платеж успешно создан",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'payment_id': openapi.Schema(
+                            type=openapi.TYPE_INTEGER,
+                            description='ID созданного платежа',
+                            example=123
+                        ),
+                        'payment_url': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='URL для оплаты через Stripe',
+                            example="https://checkout.stripe.com/pay/..."
+                        ),
+                    },
+                ),
+            ),
+            400: openapi.Response(
+                description="Ошибка валидации или создания платежа",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'error': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Описание ошибки',
+                            example="course_id или lesson_id обязателен"
+                        ),
+                    },
+                ),
+            ),
+            404: openapi.Response(
+                description="Курс или урок не найден",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'error': openapi.Schema(
+                            type=openapi.TYPE_STRING,
+                            description='Описание ошибки',
+                            example="Курс или урок не найден"
+                        ),
+                    },
+                ),
+            ),
+        },
+    )
     @action(detail=False, methods=["post"], url_path="create_payment")
     def create_payment(self, request):
         print(request.data)
