@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
@@ -8,10 +7,7 @@ from users.models import Payment, User
 class PaymentSerializer(ModelSerializer):
     class Meta:
         model = Payment
-        fields = ["__all__"]
-
-
-User = get_user_model()
+        fields = "__all__"
 
 
 class UserSerializer(ModelSerializer):
@@ -31,7 +27,10 @@ class UserSerializer(ModelSerializer):
 
 
 class RegisterSerializer(ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True, min_length=8)
+    password = serializers.CharField(
+        write_only=True,
+        required=True,
+        min_length=8)
 
     class Meta:
         model = User

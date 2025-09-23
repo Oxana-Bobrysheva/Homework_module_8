@@ -46,8 +46,10 @@ class Command(BaseCommand):
                     password=user_data["password"],
                 )
                 created_count += 1
-                self.stdout.write(f"Создан пользователь: {user.email}")
+                self.stdout.write(
+                    f"Создан пользователь: {user.email}")
 
         self.stdout.write(
-            self.style.SUCCESS(f"Успешно создано {created_count} пользователей")
+            self.style.SUCCESS(
+                f"Успешно создано {created_count} пользователей")
         )

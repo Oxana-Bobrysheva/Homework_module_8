@@ -16,18 +16,18 @@ class LessonCRUDTestCase(TestCase):
         self.moderator_group = Group.objects.create(name="moderators")
 
         # Создаем пользователей
-        self.owner_user = User.objects.create_user(
+        self.owner_user = User.objects.create_test_user(
             username="owner",
             password="password",
             email="owner@example.com"
         )
-        self.moderator_user = User.objects.create_user(
+        self.moderator_user = User.objects.create_test_user(
             username="moderator",
             password="password",
             email="moderator@example.com"
         )
         self.moderator_user.groups.add(self.moderator_group)
-        self.other_user = User.objects.create_user(
+        self.other_user = User.objects.create_test_user(
             username="other",
             password="password",
             email="other@example.com"
@@ -51,19 +51,16 @@ class LessonCRUDTestCase(TestCase):
         # URL-ы для тестов
         self.lesson_list_url = reverse("study:lessons_list")  # /study/lessons/
         self.lesson_detail_url = reverse(
-            "study:lessons_retrieve",
-            kwargs={"pk": self.lesson.id}
+            "study:lessons_retrieve", kwargs={"pk": self.lesson.id}
         )  # /study/lessons/<id>/
         self.lesson_create_url = reverse(
             "study:lessons_create"
         )  # /study/lessons/create/
         self.lesson_update_url = reverse(
-            "study:lessons_update",
-            kwargs={"pk": self.lesson.id}
+            "study:lessons_update", kwargs={"pk": self.lesson.id}
         )  # /study/lessons/<id>/update/
         self.lesson_delete_url = reverse(
-            "study:lessons_delete",
-            kwargs={"pk": self.lesson.id}
+            "study:lessons_delete", kwargs={"pk": self.lesson.id}
         )  # /study/lessons/<id>/delete/
 
         self.subscription_url = reverse(
@@ -200,7 +197,7 @@ class SubscriptionTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
         # Создаем пользователей
-        self.user = User.objects.create_user(
+        self.user = User.objects.create_test_user(
             username="user",
             password="password",
             email="user@example.com"
@@ -222,10 +219,12 @@ class SubscriptionTestCase(TestCase):
         data = {"course_id": self.course.id}
         response = self.client.post(self.subscription_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("подписка добавлена", response.data["message"])
+        self.assertIn("подписка добавлена",
+                      response.data["message"])
         self.assertTrue(
-            Subscription.objects.filter(user_sub=self.user,
-                                        course=self.course).exists()
+            Subscription.objects.filter(
+                user_sub=self.user,
+                course=self.course).exists()
         )
 
     def test_subscribe_unauthenticated(self):

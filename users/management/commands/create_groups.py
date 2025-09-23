@@ -10,7 +10,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Создаем группу модераторов
-        moderators_group, created = Group.objects.get_or_create(name="moderators")
+        moderators_group, created = Group.objects.get_or_create(
+            name="moderators")
 
         if created:
             # Получаем разрешения для моделей
