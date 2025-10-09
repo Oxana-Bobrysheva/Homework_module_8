@@ -16,8 +16,6 @@ from study.models import Course, Lesson, Subscription
 from study.paginators import StandardResultsSetPagination
 from study.serializers import CourseSerializer, LessonSerializer
 from users.permissions import IsModerator, IsOwner
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
 
 
 class CourseViewSet(ModelViewSet):
