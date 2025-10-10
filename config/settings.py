@@ -153,10 +153,10 @@ STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
 stripe.api_key = STRIPE_SECRET_KEY
 
 # URL-адрес брокера сообщений
-CELERY_BROKER_URL = 'redis://localhost:6379/0' # Например, Redis, который по умолчанию работает на порту 6379
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
 
 # URL-адрес брокера результатов, также Redis
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND')
 
 # Часовой пояс для работы Celery
 CELERY_TIMEZONE = "UTC"
@@ -174,3 +174,5 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour=0),
     },
 }
+
+DEFAULT_FROM_EMAIL=os.environ.get('DEFAULT_FROM_EMAIL')
