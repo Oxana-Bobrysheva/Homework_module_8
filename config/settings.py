@@ -12,7 +12,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 import sys
+from datetime import timedelta
+from celery.schedules import crontab
 import stripe
+from celery.backends import redis
 
 from dotenv import load_dotenv
 from pathlib import Path
@@ -40,6 +43,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "users",
     "study",
+    'django_celery_beat'
 
 ]
 REST_FRAMEWORK = {
@@ -162,3 +166,11 @@ CELERY_TASK_TRACK_STARTED = True
 
 # Максимальное время на выполнение задачи
 CELERY_TASK_TIME_LIMIT = 30 * 60
+
+# Настройки для Celery
+CELERY_BEAT_SCHEDULE = {
+    'task-name': {
+        'task': 'study.tasks.block_inactive_users',
+        'schedule': crontab(minute=0, hour=0),
+    },
+}

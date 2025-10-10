@@ -16,6 +16,7 @@ from study.models import Course, Lesson, Subscription
 from study.paginators import StandardResultsSetPagination
 from study.serializers import CourseSerializer, LessonSerializer
 from users.permissions import IsModerator, IsOwner
+from study.tasks import send_course_update_email
 
 
 class CourseViewSet(ModelViewSet):
@@ -52,6 +53,12 @@ class CourseViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+    def perform_update(self, serializer):
+        # Вызываем родительский метод для сохранения
+        super().perform_update(serializer)
+        # Отправляем асинхронное уведомление подписчикам об обновлении курса
+        send_course_update_email.delay(serializer.instance.id)
+
 
 class LessonCreateAPIView(CreateAPIView):
     serializer_class = LessonSerializer
@@ -65,6 +72,7 @@ class LessonCreateAPIView(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+        send_course_update_email.delay(serializer.instance.course.id)
 
 
 class LessonListAPIView(ListAPIView):
@@ -93,6 +101,12 @@ class LessonUpdateAPIView(UpdateAPIView):
 
     def get_queryset(self):
         return Lesson.objects.all()
+
+    def perform_update(self, serializer):
+        # Вызываем родительский метод для сохранения
+        super().perform_update(serializer)
+        # Отправляем асинхронное уведомление подписчикам о обновлении курса (через урок)
+        send_course_update_email.delay(serializer.instance.course.id)
 
 
 class LessonDestroyAPIView(DestroyAPIView):
