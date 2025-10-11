@@ -103,6 +103,22 @@ DATABASES = {
 * фильтровать по курсу или уроку,
 * фильтровать по способу оплаты.
 
+
+## Настройка и запуск с Docker Compose
+1. Клонируйте репозиторий и перейдите в корневую директорию.
+2. Скопируйте файл .env и заполните его реальными значениями (пароли, ключи).
+3. Запустите: docker-compose build && docker-compose up -d
+4. Выполните миграции: docker-compose exec web python manage.py migrate
+5. Создайте суперпользователя: docker-compose exec web python manage.py createsuperuser
+6. Соберите статику: docker-compose exec web python manage.py collectstatic --noinput
+## Проверка сервисов
+Web: http://localhost:8000
+DB: docker-compose exec db psql -U postgres -d homework_db
+Redis: docker-compose exec redis redis-cli ping
+Celery: Проверьте логи с помощью docker-compose logs celery
+## Остановка: docker-compose down
+
+
 ## Контакты
 bobrysheva_oxana@mail.ru
 
