@@ -26,7 +26,7 @@ services:
   web:
     build: .
     container_name: homework_web
-    command: gunicorn homework_module_8.wsgi:application --bind 0.0.0.0:8000
+    command: sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - .:/app
       - static_volume:/app/static
@@ -43,7 +43,7 @@ services:
   celery:
     build: .
     container_name: homework_celery
-    command: celery -A homework_module_8 worker -l info
+    command: celery -A config worker --loglevel=info
     volumes:
       - .:/app
     env_file:
@@ -57,7 +57,7 @@ services:
   celery-beat:
     build: .
     container_name: homework_celery_beat
-    command: celery -A homework_module_8 beat -l info --scheduler django
+    command: celery -A config beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - .:/app
     env_file:

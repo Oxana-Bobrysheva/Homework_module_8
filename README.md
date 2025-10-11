@@ -111,11 +111,15 @@ DATABASES = {
 4. Выполните миграции: docker-compose exec web python manage.py migrate
 5. Создайте суперпользователя: docker-compose exec web python manage.py createsuperuser
 6. Соберите статику: docker-compose exec web python manage.py collectstatic --noinput
+
+
 ## Проверка сервисов
 Web: http://localhost:8000
 DB: docker-compose exec db psql -U postgres -d homework_db
 Redis: docker-compose exec redis redis-cli ping
 Celery: Проверьте логи с помощью docker-compose logs celery
+
+
 ## Остановка: docker-compose down
 
 
