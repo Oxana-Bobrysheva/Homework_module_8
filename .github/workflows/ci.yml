@@ -27,6 +27,11 @@ jobs:
         echo "SECRET_KEY=test-secret-key-for-ci" > .env  # Dummy key for tests only
         echo "DEBUG=True" >> .env
         echo "ALLOWED_HOSTS=localhost,127.0.0.1" >> .env
+        echo "DB_NAME=test_db" >> .env
+        echo "DB_USER=" >> .env  # Empty for SQLite
+        echo "DB_PASSWORD=" >> .env
+        echo "DB_HOST=" >> .env
+        echo "DB_PORT=" >> .env
 
     - name: Run tests
       run: |
