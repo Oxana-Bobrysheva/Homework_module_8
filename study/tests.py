@@ -1,3 +1,5 @@
+from unittest import mock
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import TestCase
@@ -11,6 +13,12 @@ User = get_user_model()
 
 class LessonCRUDTestCase(TestCase):
     def setUp(self):
+        # Mock Celery task to avoid Redis dependency in tests
+        self.patcher = mock.patch('study.tasks.send_course_update_email.delay')
+        self.mock_task = self.patcher.start()
+        self.addCleanup(self.patcher.stop)
+
+
         self.client = APIClient()
         # Создаем группы
         self.moderator_group = Group.objects.create(name="moderators")
