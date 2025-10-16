@@ -35,6 +35,7 @@ class UserManager(BaseUserManager):
             raise ValueError('Email is required for test user')
         return self.create_user(email, password, **extra_fields)
 
+
 class User(AbstractUser):
     objects = UserManager()
     username = None

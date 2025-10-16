@@ -17,8 +17,6 @@ class LessonCRUDTestCase(TestCase):
         self.patcher = mock.patch('study.tasks.send_course_update_email.delay')
         self.mock_task = self.patcher.start()
         self.addCleanup(self.patcher.stop)
-
-
         self.client = APIClient()
         # Создаем группы
         self.moderator_group = Group.objects.create(name="moderators")

@@ -1,9 +1,7 @@
 import os
 import sys
-from datetime import timedelta
 from celery.schedules import crontab
 import stripe
-from celery.backends import redis
 
 from dotenv import load_dotenv
 from pathlib import Path
