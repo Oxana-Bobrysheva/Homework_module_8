@@ -1,9 +1,7 @@
 import os
 import sys
-from datetime import timedelta
 from celery.schedules import crontab
 import stripe
-from celery.backends import redis
 
 from dotenv import load_dotenv
 from pathlib import Path
@@ -90,13 +88,9 @@ DATABASES = {
 }
 if 'test' in sys.argv:
     DATABASES["default"] = {
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": os.getenv("NAME_TESTS"),
-            "USER": os.getenv("POSTGRES_USER"),
-            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-            "HOST": os.getenv("HOST", "db" if os.getenv("DATABASE_URL") else "localhost"),
-            "PORT": os.getenv("PORT", "5432"),
-        }
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
+    }
 
 
 CACHES = {

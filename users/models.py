@@ -28,6 +28,13 @@ class UserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
+    def create_test_user(self, email, password=None, **extra_fields):
+        """Helper method to create a test user with defaults."""
+        extra_fields.setdefault('is_active', True)  # Default to active for tests
+        if not email:
+            raise ValueError('Email is required for test user')
+        return self.create_user(email, password, **extra_fields)
+
 
 class User(AbstractUser):
     objects = UserManager()
