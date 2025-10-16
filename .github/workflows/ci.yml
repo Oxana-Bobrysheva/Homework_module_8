@@ -29,7 +29,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Build Docker image
-        run: docker build -t homework_module_8 .
+        run: docker build --build-arg SECRET_KEY=dummy_key_for_build -t homework-module-8:${{ github.sha }} .
 
   test:
     runs-on: ubuntu-latest
